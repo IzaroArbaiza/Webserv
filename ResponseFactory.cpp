@@ -2,13 +2,13 @@
 
 ResponseFactory::ResponseFactory(){}
 
-ResponseFactory::ResponseFactory(std::string buffer){
-    factoryResponse(buffer);
+ResponseFactory::ResponseFactory(std::string buffer, std::map<std::string, std::string> config){
+    factoryResponse(buffer, config);
 }
 
 ResponseFactory::~ResponseFactory(){}
 
-response * ResponseFactory::factoryResponse(std::string readed){ //meter aqui rawRequest en vz de en el constructor?
+response * ResponseFactory::factoryResponse(std::string readed, std::map<std::string, std::string> config){ //meter aqui rawRequest en vz de en el constructor?
     std::string tmpRequestLine;
     std::string tmpMethod;
     tmpRequestLine = readed.substr(0, tmpRequestLine.find(CRLF)); //first line of the message is the Request-Line = Method SP Request-URI SP HTTP-Version CRLF

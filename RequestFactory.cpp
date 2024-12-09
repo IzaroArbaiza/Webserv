@@ -1,8 +1,14 @@
 #include "RequestFactory.hpp"
 
-RequestFactory::RequestFactory(){}
+RequestFactory::RequestFactory(std::map<std::string, std::string> config){
+    requestconfig = config;
+}
 
-RequestFactory::RequestFactory(std::string buffer){
+RequestFactory::RequestFactory(){
+}
+
+RequestFactory::RequestFactory(std::string buffer, std::map<std::string, std::string> config){
+    requestconfig = config;
     factoryRequest(buffer);
 }
 

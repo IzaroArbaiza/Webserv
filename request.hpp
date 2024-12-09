@@ -36,6 +36,7 @@ class request{
     public:
         std::map<std::string, std::string> header_fields;
         std::string rawRequest;
+        std::map<std::string, std::string> requestconfig;
         request (std::string);
         request ();
         request (request&);

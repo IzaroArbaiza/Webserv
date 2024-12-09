@@ -14,8 +14,10 @@
 
 class RequestFactory{
     public:
+        std::map<std::string, std::string> requestconfig;
         RequestFactory();
-        RequestFactory(std::string);
+        RequestFactory(std::map<std::string, std::string>);
+        RequestFactory(std::string, std::map<std::string, std::string>);
         ~RequestFactory();
         static request * factoryRequest(std::string);
 };

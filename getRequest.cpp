@@ -9,6 +9,7 @@ getRequest::getRequest(std::string message): request(message){
         std::cout << "The reusorce is a not folder or not index.htm" << std::endl;
 }
 
+
 getRequest::getRequest(){ std::cout << "getRequest created" << std::endl; parseURL();}
 
 getRequest::getRequest(getRequest& cp){
@@ -91,17 +92,17 @@ void getRequest::uri_extention(){
 }
 
 void getRequest::parse_location(){
-    std::cout << "getrequest fillLocation. path: " << path << std::endl;
+    //std::cout << "getrequest parse_location. domain: " << requestconfig["domain"] << std::endl;
+    std::cout << "getrequest parse_location. CUCU" << std::endl;
     
     if (path == ""){ //tratar como redirección!! // redireccionar localhost:8080 a index
-        //autoindex, hay index en la carpeta que apuntamos?
-        
         redir_index = true;
         //location = "index.html"; //que se puede acceder a dominio que nos vengan en vez de localhost  dominioenviroment:puerto/index.html
         //resource.append(location);
     }
     else{
         location = path;
+        //location = requestconfig["domain"];
         if (query_string != ""){
             location = location.substr(1,location.find('?') - 1);
             //resource = header_fields["Referer"]; //usar localhost??
@@ -118,16 +119,16 @@ void getRequest::parse_location(){
 
 void getRequest::parse_file(){
     if (query_string != "")
-        std::cout << "getRequest fillFile. uri: " << getUri() << std::endl;
+        std::cout << "getRequest parse_file. uri: " << getUri() << std::endl;
     //file_name = getUri();
     file_name = getQueryString();
-    std::cout << "getRequest fillFile. uri: " << getUri() << std::endl;
+    std::cout << "getRequest parse_file. uri: " << getUri() << std::endl;
     if (file_name.find("file=") != std::string::npos)
         file_name = file_name.substr(file_name.find("file=") + 5);
     else 
         //file_name = file_name.substr(file_name.find("=") + 1, file_name.find("&") - file_name.find("?") - 1);
         file_name = file_name.substr(file_name.find("?") + 1, file_name.find("&") - file_name.find("?") - 1);
-    std::cout << "getRequest fillFile. file: " << file_name << std::endl;
+    std::cout << "getRequest parse_file. file: " << file_name << std::endl;
     //std::cout << "getRequest fillFile. ressorse: " << ressorse << std::endl;
 }
 

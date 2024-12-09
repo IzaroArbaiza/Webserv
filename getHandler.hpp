@@ -46,4 +46,5 @@ class getHandler{
     //std::string file_type(std::string route);
     std::string accesable(request * entry);
     void parse_resource(request * entry);
+    void reload_location();
 };

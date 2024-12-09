@@ -49,7 +49,7 @@ void cserver::dostuff (int sock) //read and answer request from client
     client_request = read_client(sock);
     std::cout << "POLLin in socket: [" << sock <<"]" << std::endl;
     request *entry;
-    RequestFactory maker;
+    RequestFactory maker(config);
     entry = maker.factoryRequest(client_request);
     std::cout << "cserver. request line: " << entry->getRequestLine() << std::endl;
     if (!client_request.empty() && allowedMethod(sock, entry->getMethod(), config)){

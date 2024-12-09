@@ -14,7 +14,7 @@
 class ResponseFactory{
     public:
         ResponseFactory();
-        ResponseFactory(std::string);
+        ResponseFactory(std::string, std::map<std::string, std::string> config);
         ~ResponseFactory();
-        static response * factoryResponse(std::string);
+        static response * factoryResponse(std::string, std::map<std::string, std::string>);
 };
