@@ -21,7 +21,6 @@ int main(int argc, char const *argv[])
 			std::cerr << e.what() << '\n';
 			return (1);
 		}
-		
 	} else {
 		std::cout << "Invalid amount of arguments. Try again" << std::endl;
 		return (1);

@@ -25,4 +25,5 @@ request * RequestFactory::factoryRequest(std::string readed){ //meter aqui rawRe
         return new postRequest(readed);
     if (tmpMethod == "DELETE")
       return new deleteRequest(readed);
+    return (0);
 }

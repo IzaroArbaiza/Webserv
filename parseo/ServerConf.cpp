@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 14:00:20 by iarbaiza          #+#    #+#             */
-/*   Updated: 2024/12/09 15:01:57 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2024/12/16 20:04:36 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ void ServerConf::checkParam(std::string &param) {
 
 	pos = param.rfind(';'); //Finds last ; from param
 	if (pos != param.size()-1) {
-		throw(std::invalid_argument("No vaid parameter"));
+		std::cout << param << std::endl;
+		throw(std::invalid_argument("No valid parameter"));
 	}
 	param.erase(pos);
 }
@@ -381,7 +382,6 @@ void ServerConf::setLocation(std::vector<std::string> param, std::string path) {
 			throw std::logic_error("Failed Validating Return");
 		case 4:
 			throw std::logic_error("Failed Validating Alias");
-
 		default:
 			break ;
 	}

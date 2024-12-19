@@ -6,13 +6,14 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 14:00:31 by iarbaiza          #+#    #+#             */
-/*   Updated: 2024/12/09 15:01:32 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2024/12/19 19:22:37 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ConfFile.hpp"
 #include <algorithm>
 #include <sys/stat.h> 
+//#include "./cserver.hpp"
 
 ConfFile::ConfFile(const std::string path) : _path(path) {
     _numServ = 0;
@@ -99,14 +100,11 @@ void ConfFile::splitServers(std::string &content) {
         if (startServer(content, start) == content.length()) {
             break ;
         }
-
         start = startServer(content, start);
         end = endServer(content, start);
-
 		if (end <= start) {
 			throw(std::invalid_argument("algo va mal"));
 		}
-        
 		this->_serv.push_back(content.substr(start, end - start + 1));
         this->_numServ++;
         start = end + 1;
@@ -171,16 +169,20 @@ size_t ConfFile::endServer(std::string &content, size_t i) {
 /**
  * Checkeo de cada servidor, lanza serverParse para parsearlos, y mas adelante verificar esto mismo
 */
-void ConfFile::checkData() {
+void ConfFile::checkData(std::vector<configuration> &confis) {
     if (_serv.size() != _numServ) {
         throw(std::invalid_argument("Something happened with the server amount."));
     }
-    std::cout << _numServ << std::endl;
+    //std::cout << _numServ << std::endl;
     if (_numServ > 1) {
         checkServ();
     }
     for (size_t i = 0; i < _numServ; i++) {
-        serverParse(_serv[i]);
+        configuration confis2;
+        
+        confis2.numServs = _numServ;
+        confis2 = serverParse(_serv[i], confis2);
+        confis.push_back(confis2);
     }
 }
 
@@ -198,7 +200,7 @@ void ConfFile::checkServ() {
 /**
  * Funcion de parseo de cada una de las lineas de cada servidor del archivo de configuracion
 */
-void ConfFile::serverParse(std::string &conf) {
+configuration ConfFile::serverParse(std::string &conf, configuration &confis) {
     std::vector<std::string> param;
     std::vector<std::string> errors;
     std::string delimit;
@@ -259,11 +261,11 @@ void ConfFile::serverParse(std::string &conf) {
             
             i++;
             if (param[i] == "{" || param[i] == "}") {
-                throw(std::invalid_argument("Wrong craracter in scope."));
+                throw(std::invalid_argument("Wrong character in scope."));
             }
             path = param[i];
             if (param[++i] != "{") {
-                throw(std::invalid_argument("Wrong craracter in scope."));
+                throw(std::invalid_argument("Wrong ctaracter in scope."));
             }
             i++;
             while (param[i] != "}" && i < param.size()) {
@@ -271,7 +273,7 @@ void ConfFile::serverParse(std::string &conf) {
             }
             server.setLocation(code, path);
             if (param[i] != "}" && i < param.size()) {
-                throw(std::invalid_argument("Wrong craracter in scope."));
+                throw(std::invalid_argument("Wrong character in scope."));
             }
             loc = 0;
         }
@@ -280,6 +282,7 @@ void ConfFile::serverParse(std::string &conf) {
                 std::cout << param[i] << std::endl;
                 throw(std::invalid_argument("Wrong parameters after location."));
             } else {
+                std::cout << param[i] << std::endl;
                 throw(std::invalid_argument("Wrong."));
             }
         }
@@ -306,6 +309,15 @@ void ConfFile::serverParse(std::string &conf) {
     if (!server.validErrorPages()) {
         throw std::invalid_argument("Invalid error or error page");
     }
+    
+    confis.body_size = server.getClientMaxBodySize();
+    confis.host = server.getHost();
+    confis.index = server.getIndex();
+    confis.port = to_string(server.getPort());
+    confis.root = server.getRoot();
+    confis.server_name = server.getServerName();
+    
+    return (confis);
 }
 
 /**
@@ -335,4 +347,8 @@ std::vector<std::string> ConfFile::splitParam(std::string conf, std::string deli
 
 std::string	ConfFile::getPath() {
 	return (this->_path);
+}
+
+size_t ConfFile::get_numServ() {
+    return (this->_numServ);
 }

@@ -26,7 +26,7 @@ request & request::operator=(request& cp){
     return *this;
 }
 
-void request::fill(std::string message){}
+void request::fill(std::string message){(void)message;}
 
 std::string request::getMethod(){ return method; }
 
@@ -81,7 +81,7 @@ void request::parseHeader(){
     std::string request_header;
     request_header = rawRequest.substr(rawRequest.find(CRLF), rawRequest.find("\r\n\r\n") - rawRequest.find(CRLF));
     lines = split(request_header, CRLF);
-    for (int i = 1; i < lines.size() - 2; i++){
+    for (int i = 1; i < (int)lines.size() - 2; i++){
         if (lines[i] == "\r\n\r\n"){ //quitar?
             break ;
         }
@@ -91,11 +91,12 @@ void request::parseHeader(){
     domain = header_fields["Host"];
 }
 
+//Cambiar!
 std::vector<std::string> split(const std::string& s, const std::string& delimiter) {
     std::vector<std::string> tokens;
 
-    auto start = 0U;
-    auto end = s.find(delimiter);
+    size_t start = 0U;
+    size_t end = s.find(delimiter);
     while (end != std::string::npos)
     {
         tokens.push_back(s.substr(start, end - start));
@@ -124,7 +125,7 @@ void request::checkExtention(){
         //std::string ruta = header_fields["Referer"].substr(0, header_fields["Referer"].find("?")) + path;
         std::string ruta = domain + resource;
         std::fstream fs;
-        fs.open(ruta, std::ios::in);
+        fs.open(ruta.c_str(), std::ios::in);
         if (fs.fail())
             extention = "folder";
         fs.close();

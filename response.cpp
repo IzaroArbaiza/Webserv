@@ -74,7 +74,7 @@ std::string response::convertOutput(){ //fields to string
     return output;
 }
 
-void response::sendToClient(std::string response, std::string location){ //response respesta en forma de string, location archivo, pagna html a mandar
+/* void response::sendToClient(std::string response, std::string location){ //response respesta en forma de string, location archivo, pagna html a mandar
     //convertir de campos a string unido(cabecera + \r\n + header_fields + \r\n\r\n + contenido)
     //rutina de mandar string al socket
 
@@ -84,7 +84,7 @@ void response::sendToClient(std::string response, std::string location){ //respo
         write(this->socket, response.c_str(), response.size());
     }
     resource.close(); // Close the file stream
-}
+} */
 
 void response::fill_status_line(std::string code){
     std::map<const char*, int> codes;
@@ -201,7 +201,7 @@ void response::locationPage(std::string code){
 }
 
 void response::readPage(std::string location){
-    std::ifstream resource(location);
+    std::ifstream resource(location.c_str());
     std::string buffer;
     while (std::getline(resource, buffer)) {
         body.append(buffer);

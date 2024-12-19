@@ -17,6 +17,7 @@ getRequest::getRequest(getRequest& cp){
 }
 
 getRequest & getRequest::operator=(getRequest& cp){
+    (void)cp;
     //actualizar los campos que se copian
     return *this;
 }
@@ -47,8 +48,8 @@ void getRequest::fill (std::string message){ //sobreesribir
     int end = request_line.find("\r\n\r\n");
     header = message.substr(pos, end - pos);
     lines = split(header, CRLF);
-    int i;
     /*
+    int i;
     for (i = 1; i < lines.size() - 1; i++){
         if (lines[i] == "\r\n\r\n"){
             i = 0;

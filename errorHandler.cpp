@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errorHandler.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xbasabe- <xbasabe-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 18:51:22 by xbasabe-          #+#    #+#             */
-/*   Updated: 2024/11/06 18:52:45 by xbasabe-         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:54:59 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,8 @@ std::string errorHandler::errorPage(std::string error){
     return "default";
 }
 
-std::string errorHandler::errorReply()
+//Cambiar!
+/* std::string errorHandler::errorReply()
 {
     std::ifstream resource(errorPage(error_code));
     std::string response = errorHead(error_code);
@@ -120,4 +121,4 @@ std::string errorHandler::errorReply()
         write(socket, response.c_str(), response.size());
     }
     resource.close();
-}
+} */

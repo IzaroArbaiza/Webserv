@@ -12,11 +12,13 @@ deleteRequest::deleteRequest(deleteRequest& cp){
 }
 
 deleteRequest & deleteRequest::operator=(deleteRequest& cp){
+    (void)cp;
     //this->_header = cp._header; //actualizar los campos que se copian
     return *this;
 }
 
 void deleteRequest::fill (std::string message){ //sobreesribir
+    (void)message;
     deleteParse();
 }
 /*

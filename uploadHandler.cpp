@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   uploadHandler.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xbasabe- <xbasabe-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 19:21:35 by xbasabe-          #+#    #+#             */
-/*   Updated: 2024/11/13 12:18:49 by xbasabe-         ###   ########.fr       */
+/*   Updated: 2024/12/11 20:09:06 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ uploadHandler::uploadHandler(int sock) : _sock(sock) {}
 
 void uploadHandler::responde(request * entry){
     std::cout << "   -----executing UPLOAD request-----" << std::endl;
-    std::ofstream ofs("./downloads/" + fileName(entry)); // asi solo sube a esa carpeta o puede escogerse?
+    //Cambiar!
+    std::string downi= "./downloads/"+ fileName(entry);
+    std::ofstream ofs(downi.c_str()); // asi solo sube a esa carpeta o puede escogerse?
     ofs << fileContent(entry);
     ofs.close();
     //crear respuesta MIME: cabecera, content-type y contenido y mandar al socket

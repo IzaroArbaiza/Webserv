@@ -7,8 +7,8 @@ postHandler::postHandler(int sock) : _sock(sock) {}
 void postHandler::responde(request * entry){
     std::string file_name;
     std::string file_type;
-    size_t from;
-    size_t end;
+    //size_t from;
+    //size_t end;
     std::string file_content;
     std::string file;
 
@@ -59,6 +59,7 @@ std::string postHandler::actionDetector(request * entry)
         //    return "delete";
     else if (type.find("application/x-www-form-urlencoded") != std::string::npos)
         return "cgi";
+    return (0);
 }
 
 void postHandler::execute(request * entry){
@@ -108,4 +109,5 @@ std::string postHandler::file_type(std::string route){
             }
         }
     }
+    return (0);
 }

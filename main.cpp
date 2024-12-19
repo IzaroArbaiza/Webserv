@@ -1,17 +1,32 @@
 #include "cserver.hpp"
-#define SERVER_PORT                "8080" //viene de enviroment
+#include "parseo/Parse.hpp"
+//#define SERVER_PORT                "8080" //viene de enviroment
 #define ERROR_IN_INPUT             9
 #define BACKLOG                   10
 #define NUM_FDS                    5
 
-void error (char *msg);
+void error (std::string msg);
+int parse_config(int argc, char const * argv[], std::vector<configuration> &confis);
+int spell_server(configuration confis);
 
-int main (int argc, char **argv)
+int main(int argc, char const *argv[])
 {
+    std::vector<configuration> confis;
+
+    parse_config(argc, argv, confis);
+
+    for (int i = 0; i < confis[i].numServs; i++) {
+        spell_server(confis[i]);
+    }
+    return 0;
+}
+
+int spell_server(configuration confis) {
     //signal(SIGINT, (void (*)(int))(&sigintHandler));
-    cserver server_action;
-    const char * const ident = "xbasabe- trainning server"; //viene user en el enviroment
-    openlog (ident, LOG_CONS | LOG_PID | LOG_PERROR, LOG_USER);
+    cserver server_action(confis);
+
+    //const char * const ident = "xbasabe- trainning server"; //viene user en el enviroment
+    openlog (confis.server_name.c_str(), LOG_CONS | LOG_PID | LOG_PERROR, LOG_USER);
     syslog (LOG_USER | LOG_INFO, "%s", "server started!");
     struct addrinfo hints;
     memset(&hints, 0, sizeof (struct addrinfo));
@@ -20,14 +35,14 @@ int main (int argc, char **argv)
     hints.ai_flags = AI_PASSIVE;    /* for wildcard IP address */
     struct addrinfo *result;
     int s;
-    if ((s = getaddrinfo (NULL, SERVER_PORT, &hints, &result)) != 0) {
+    if ((s = getaddrinfo (NULL, confis.port.c_str(), &hints, &result)) != 0) {
         fprintf (stderr, "getaddrinfo: %s\n", gai_strerror (s));
         exit (EXIT_FAILURE);
     }
     /* Scan through the list of address structures returned by
        getaddrinfo. Stop when the the socket and bind calls are successful. */
     int listener, optval = 1;
-    socklen_t length;
+    //socklen_t length;
     struct addrinfo *rptr;
     for (rptr = result; rptr != NULL; rptr = rptr -> ai_next) {
         listener = socket (rptr -> ai_family, rptr -> ai_socktype,
@@ -67,14 +82,14 @@ int main (int argc, char **argv)
     char str [INET6_ADDRSTRLEN];
     struct sockaddr_in  *ptr;
     struct sockaddr_in6  *ptr1;
-    struct tnode *root = NULL;
+    //struct tnode *root = NULL;
     while (1) {
         // monitor readfds for readiness for reading
 	    nfds = numfds;
 	    if (poll (pollfds, nfds, -1) == -1)
 	        error ("poll");
         // Some sockets are ready. Examine readfds
-        for (int i = 0; i < (nfds + 1); i++) {
+        for (int i = 0; i < (int)(nfds + 1); i++) {
             //inicializar pollfds, ¿memset? ejemplo memset(&hints, 0, sizeof (struct addrinfo));
             //memset(&pollfds, 0, sizeof(struct pollfd));
 		    if (pollfds[i].fd <= 0) // file desc == 0 is not expected, as these are socket fds and not stdin
@@ -108,7 +123,7 @@ int main (int argc, char **argv)
                     if (ptr)
                         syslog (LOG_USER | LOG_INFO, "%s %s", "Connection from client", str); // quitar syslog ¿equivalente, es necesario?
                 }
-                else  // data from an existing connection, receive it && do stuf 
+                else  // data from an existing connection, receive it && do stuf
                 {
                     //dostuff(pollfds[i].fd); //CLASS SERVER, DO STUFF
                     //cserver server_action;
@@ -119,26 +134,41 @@ int main (int argc, char **argv)
         } // for
     } // while (1) solo sale con error o Ctrl+C
     close(listener);
-    for(int i = 0; i < (nfds + 1); i++)
+    for(int i = 0; i < (int)(nfds + 1); i++)
         close(pollfds[i].fd);
     exit (EXIT_SUCCESS);
 } // main
 
-void error (/*const*/ char *msg) //actualiza error y sale del bucle, cierra el server en c++ pasar a exception
+void error (/*const*/ std::string msg) //actualiza error y sale del bucle, cierra el server en c++ pasar a exception
 {
-    perror (msg);
+    std::perror (msg.c_str());
     exit (1);
 }
 
-void sigintHandler(int signal, request * entry) { //parametros listener pollfds nfds o crear clase server y pasar el server
-    if (signal == SIGINT) {
-        std::cout << "Caught SIGINT (Ctrl+C)!" << std::endl;
-        // Perform any necessary cleanup or actions
-        //if (entry)
-        //    delete entry;
-        //limpiar alojado para poll?
-        //close(listener);
-        //for(int i = 0; i < (nfds + 1); i++)
-        //    close(pollfds[i].fd);
-    }
+int parse_config(int argc, char const * argv[], std::vector<configuration> &confis){
+	std::string	cont;
+    
+	Parse parse = Parse();
+	if (argc == 1 || argc == 2) {
+		try {
+			if (argc == 1) {
+				//std::cout << "Ha llegau un argumento" << std::endl;
+				cont = "conf/default.conf";
+			} else if (argc == 2) {
+				//std::cout << "Han llegau dos argumentos" << std::endl;
+				cont = argv[1];
+			}
+			parse.parse(cont, confis);
+
+		} catch(const std::exception& e) {
+			std::cerr << e.what() << '\n';
+			//response toClient(_sock, "500");
+            //toClient.reply();
+			return (1);
+		}
+	} else {
+		std::cout << "Invalid amount of arguments. Try again" << std::endl;
+		return (1);
+	}
+    return (0);
 }

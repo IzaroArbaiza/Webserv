@@ -1,19 +1,44 @@
 #include "cserver.hpp"
-#define SERVER_PORT                "8080" //viene de enviroment
+//#include "ServerConf.hpp"
+//#define SERVER_PORT                "8080" //viene de enviroment
 #define ERROR_IN_INPUT             9
 #define BACKLOG                   10
 #define NUM_FDS                    5
 
 cserver::cserver(){
-    init_server();
+    init_server_default();
 }
 
-/*
-cserver::cserver(valores){
-    //init_server();
-}*/
+cserver::cserver(configuration confis){
+    init_server(confis);
+}
 
-void cserver::init_server(){
+void cserver::init_server(configuration confis){
+    
+    //init_server_default();
+    //if (!confis.port.empty())
+        //my_config.port = confis.port;
+    //if (!confis.host.empty())
+        //my_config.host = confis.host;
+    config["port"] = confis.port;
+    config["locaction"] = confis.host;
+    config["root"] = "/home/";
+    std::string user = getenv("USER");
+    config["root"].append(user);
+    config["root"].append(getcwd(NULL,0));
+    std::cout << "init server defalut root: " << config["root"] << std::endl;
+    config["page_404"] = "404.html";
+    config["page_403"] = "403.html";
+    config["page_405"] = "405.html";
+    config["page_418"] = "418.html";
+    config["page_500"] = "Alt500.html";
+    config["page_delete"] = "delete.html";
+    get_allowed = true;
+    post_allowed = true;
+    delete_allowed = true;
+}
+
+void cserver::init_server_default(){
     //get config values and init server vbles
     //lanzar desde aqui el parseo de config o desde el main?
 
@@ -81,9 +106,9 @@ void cserver::dostuff (int sock) //read and answer request from client
 }
 
 std::string cserver::read_client (int sock){
-    int n = 0;
+    size_t n = 0;
     std::string buffer;
-    buffer.resize(50000000);
+    buffer.resize(50000000); //body size + request line...
     std::string request;
 
     n = recv(sock, &buffer[0], buffer.size(), 0);
@@ -124,4 +149,5 @@ bool cserver::allowedMethod(int sock, std::string method, std::map<std::string, 
     }
     else if(method == "GET" || method == "POST" || method == "DELETE") //metodos soportados
         return true;
+    return (false);
 }

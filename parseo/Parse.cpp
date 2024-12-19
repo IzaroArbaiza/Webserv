@@ -1,4 +1,6 @@
 #include "Parse.hpp"
+//#include "./cserver.hpp"
+
 
 Parse::Parse(){}
 Parse::~Parse(){}
@@ -11,7 +13,7 @@ Parse::~Parse(){}
 	// removeTrash() -> removes the comments
 //split the file
 	// splitServers() -> splits enery server and display it in a vector (_serv)
-int Parse::parse(std::string conf) {
+int Parse::parse(std::string conf, std::vector<configuration> &confis) {
     ConfFile confi(conf);
 	std::string content;
 
@@ -33,6 +35,7 @@ int Parse::parse(std::string conf) {
 	confi.removeTrash(content);
 	confi.splitServers(content);
 	//Checking the data and starting the configuration parse of every server
-	confi.checkData();
-	return (0);
+	confi.checkData(confis);
+	return confi.get_numServ();
+	//return (0);
 }

@@ -4,6 +4,7 @@
 #include <iostream>
 #include "ConfFile.hpp"
 #include <exception>
+#include "../cserver.hpp"
 
 class Parse {
 	private:
@@ -12,7 +13,7 @@ class Parse {
 		Parse();
 		~Parse();
 
-		int parse(std::string conf);
+		int parse(std::string conf, std::vector<configuration> &confis);
 
 		class ErrorException : public std::exception {
 			private:

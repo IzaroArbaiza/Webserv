@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: xbasabe- <xbasabe-@student.42.fr>          +#+  +:+       +#+         #
+#    By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/30 11:57:17 by xbasabe-          #+#    #+#              #
-#    Updated: 2024/11/27 11:22:02 by xbasabe-         ###   ########.fr        #
+#    Updated: 2024/12/12 11:19:29 by iarbaiza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,10 @@ SRC :=	cserver.cpp \
 		uploadHandler.cpp \
 		deleteRequest.cpp \
 		main.cpp \
+		parseo/Parse.cpp \
+		parseo/ConfFile.cpp \
+		parseo/Location.cpp \
+		parseo/ServerConf.cpp \
 
 CXX = c++
 RM := rm -rf
@@ -38,7 +42,7 @@ $(NAME): $(OBJS)
 		$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME)
 
 $(OBJS):%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 clean :
 		$(RM) $(OBJS)

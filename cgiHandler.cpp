@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cgiHandler.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: xbasabe- <xbasabe-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 19:21:35 by xbasabe-          #+#    #+#             */
-/*   Updated: 2024/12/04 11:46:49 by xbasabe-         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:23:39 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ cgiHandler::cgiHandler(int sock, std::map<std::string, std::string> conf) : _soc
 void cgiHandler::responde(request * entry){
     std::string file_name;
     std::string file_type;
-    size_t from;
-    size_t end;
+    //size_t from;
+    //size_t end;
     std::string file_content;
     std::string file;
 
@@ -92,8 +92,9 @@ void cgiHandler::responde(request * entry){
             toClient.reply();
         }
         else{
-        std::string output = "Child process terminated due to signal:";
-        output.append(std::to_string(status));
+        //Cambiar!
+        //std::string output = "Child process terminated due to signal:";
+        //output.append(std::to_string(status));
         std::cout << "Child process terminated due to signal:" << status << std::endl;
         response toClient(_sock, "500", cgiconfig);
         toClient.reply(); //¿meter aqui el fallo: output
@@ -145,11 +146,11 @@ void cgiHandler::execPy(std::string file_name, request *entry){
     std::string vbles = vblesMethod(entry);
     char *envp[] = { NULL };
     if (vbles.empty()){
-        char *argv[] = { "/usr/bin/python3",(char *)path.c_str(),  NULL };
+        char *argv[] = { (char *)"/usr/bin/python3",(char *)path.c_str(),  NULL };
         execve(argv[0], &argv[0], envp);
     }
     else{
-        char *argv[] = { "/usr/bin/python3",(char *)path.c_str(), (char *)vbles.c_str(),  NULL };
+        char *argv[] = { (char *)"/usr/bin/python3",(char *)path.c_str(), (char *)vbles.c_str(),  NULL };
         execve(argv[0], &argv[0], envp);
     }
 }
@@ -161,6 +162,7 @@ std::string cgiHandler::cgiFileName(request* entry){
     else if(entry->getMethod() == "GET"){
         return static_cast<getRequest *>(entry)->getFileName();
     }
+    return (0);
 }
 
 std::string cgiHandler::vblesMethod(request *entry)
@@ -171,6 +173,7 @@ std::string cgiHandler::vblesMethod(request *entry)
     if (entry->getMethod() == "POST"){
         return static_cast<postRequest *>(entry)->getVbles();
     }
+    return (0);
 }
 
 /*

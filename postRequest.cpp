@@ -16,11 +16,13 @@ postRequest::postRequest(postRequest& cp){
 }
 
 postRequest & postRequest::operator=(postRequest& cp){
+    (void)cp;
     //actualizar los campos que se copian
     return *this;
 }
 
 void postRequest::initPost(std::string str){
+    (void)str;
     std::cout << actionDetector() << std::endl;
     boundary = header_fields["Content-Type"].substr(header_fields["Content-Type"].find("boundary=") + 9, header_fields["Content-Type"].find(CRLF));
 
@@ -72,8 +74,8 @@ void postRequest::fill(std::string message){ //sobreesribe el metodo fill de req
     header = message.substr(pos, end - pos);
     lines = split(header, CRLF);
     //fill _header with header fields
-    int i;
     /*
+    int i;
     for (i = 1; i < lines.size() - 1; i++){
         if (lines[i] == "\r\n\r\n"){
             i = 0;
@@ -119,8 +121,8 @@ void postRequest::fillVbles(){ //vbles que lleguen en el post
 }
 
 void postRequest::parseBody(){ //sacar los datos del body
-    size_t from;
-    size_t end;
+    //size_t from;
+    //size_t end;
     //std::string file_name;
     std::string file_content;
     std::string file_type;
@@ -132,7 +134,7 @@ void postRequest::parseBody(){ //sacar los datos del body
     body_fields = split(request_body, "--" + boundary);
     fillLocation(body_fields[1]);
     std::cout << "postRequest pase body for loop vbles: " << body_fields.size() << std::endl;
-    for(int i = 2; i < body_fields.size(); i++){
+    for(size_t i = 2; i < (size_t)body_fields.size(); i++){
         //procesar cada fila, variables. fillVbles
         std::cout << "fila["<<i <<"] " << body_fields[i] << std::endl;
         std::string vble = body_fields[i].substr(body_fields[i].find_first_of("\"") + 1 , body_fields[i].find_last_of("\"") - body_fields[i].find_first_of("\"") -1);
@@ -142,7 +144,8 @@ void postRequest::parseBody(){ //sacar los datos del body
             vble = body_fields[i].substr(body_fields[i].find_last_of("\"") + 1, body_fields[i].find_last_of(CRLF) - body_fields[i].find_last_of("\"") + 1);
             exec_vbles.append(vble + "&");
         }
-    exec_vbles.pop_back();
+    //Cambiar!
+    exec_vbles.erase(exec_vbles.size() - 1);
     std::cout << "postRquest cgi vbles" << exec_vbles << std::endl;
     if (!exec_vbles.empty()){
         size_t pos = exec_vbles.find(CRLF); //elimiar saltos de linea
@@ -217,4 +220,5 @@ std::string postRequest::actionDetector()
         return "upload";
     else if (type.find("application/x-www-form-urlencoded") != std::string::npos)
         return "cgi";
+    return (0);
 }

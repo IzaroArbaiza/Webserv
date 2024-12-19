@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 11:54:35 by iarbaiza          #+#    #+#             */
-/*   Updated: 2024/11/27 12:43:24 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2024/12/11 19:31:47 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #include "ServerConf.hpp"
 #include <stdexcept>
 #include <map>
-//#include <cstdlib> //exit()
 
 class Location {
 	private:
