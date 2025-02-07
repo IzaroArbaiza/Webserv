@@ -1,30 +1,6 @@
 #pragma once
-#include <map>
-#include <string>
-#include <iostream>
-#include <vector>
-#include <functional>
-#include <stdlib.h>
 
-#include <stdio.h>
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <poll.h>
-#include <errno.h>
-#include <syslog.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <stdint.h>
-#include <time.h>
-#include "parse.hpp"
-#include "request.hpp"
-#include <fstream>
-#include <bitset>
+#include "struct.hpp"
 #include "request.hpp"
 #include "errorHandler.hpp"
 

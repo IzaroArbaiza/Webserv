@@ -1,9 +1,9 @@
 #include "postRequest.hpp"
 
-postRequest::postRequest(std::string str): request(str) {
+postRequest::postRequest(std::string str, configuration config): request(str) {
     std::cout << "postRequest created" << std::endl;
-    //fill(str);
-    initPost(str);
+    init();
+    parse_resource(config);
     std::cout << "initialized postRequest" << std::endl;
     std::cout << "    variables (exec_vbles): " << exec_vbles << std::endl;
     std::cout << "    file name: " << file_name << std::endl;
@@ -21,13 +21,11 @@ postRequest & postRequest::operator=(postRequest& cp){
     return *this;
 }
 
-void postRequest::initPost(std::string str){
-    (void)str;
+void postRequest::init(){
     std::cout << actionDetector() << std::endl;
     boundary = header_fields["Content-Type"].substr(header_fields["Content-Type"].find("boundary=") + 9, header_fields["Content-Type"].find(CRLF));
 
     extractBody();
-    parse_resource();
     //if (!request_body.empty())
     //    std::cout << "body rellenado" << std::endl;
 
@@ -43,62 +41,12 @@ void postRequest::initPost(std::string str){
         std::vector<std::string> body_fields;
         body_fields = split(request_body, "--" + boundary);
         file_content = body_fields[1];
+        std::cout << "posrRequest::init file content size " << file_content.size() << std::endl;
     }
     //std::cout << "body: " << request_body << std::endl;
     //std::cout << "POST action: " << actionDetector() << std::endl;
     //std::cout << "location: " << location << std::endl;
     //std::cout << "variables en formato http: " << exec_vbles << std::endl;
-}
-
-void postRequest::fill(std::string message){ //sobreesribe el metodo fill de request
-    std::string header;
-    std::string body;
-    std::vector<std::string> lines;
-    //añadir  el recurso o location que quiere accederse, y la función para obtenerlo
-    int pos;
-    rawRequest = message;
-    //std::cout << "postRequest fill. raw request: " << rawRequest << std::endl;
-    request_line = message.substr(0, request_line.find(CRLF)); //first line of the message is the Request-Line = Method SP Request-URI SP HTTP-Version CRLF
-    //split request line
-    method = request_line.substr(0, request_line.find(" "));
-    //std::cout << "request line: ^" << request_line << "^"<< std::endl;
-    std::string tmp;
-    tmp = message.substr(message.find(" ") + 1, message.find("HTTP") - 5);
-    if (tmp != "/"){
-        uri = tmp;
-        uri_extention();
-    }
-    version = request_line.substr(message.find("HTTP"), 8);
-    pos = request_line.find(CRLF) + 1;
-    int end = request_line.find("\r\n\r\n");
-    header = message.substr(pos, end - pos);
-    lines = split(header, CRLF);
-    //fill _header with header fields
-    /*
-    int i;
-    for (i = 1; i < lines.size() - 1; i++){
-        if (lines[i] == "\r\n\r\n"){
-            i = 0;
-            break ;
-        }
-        _header[lines[i].substr(0,lines[i].find(":"))] = lines[i].substr(lines[i].find(":") + 2,lines[i].find(CRLF));
-        //std::cout << "getRequest head fields: " << _header[lines[i].substr(0,lines[i].find(":"))] << std::endl;
-    }
-    */
-    extractBody();
-    exec_vbles = request_body.substr(request_body.find_first_of("=") + 1);
-    fillFilename();
-    //if (actionDetector() == "cgi")
-    //    parseBody();
-    //else if (actionDetector() == "cgi")
-    /*
-    if (!request_body.empty()){
-        size_t pos = request_body.find(CRLF); //elimiar saltos de linea
-        while (pos != std::string::npos) {
-            request_body.erase(pos, 2);
-            pos = request_body.find(CRLF);
-        }
-    }*/
 }
 
 void postRequest::extractBody(){
@@ -121,8 +69,6 @@ void postRequest::fillVbles(){ //vbles que lleguen en el post
 }
 
 void postRequest::parseBody(){ //sacar los datos del body
-    //size_t from;
-    //size_t end;
     //std::string file_name;
     std::string file_content;
     std::string file_type;
@@ -156,12 +102,13 @@ void postRequest::parseBody(){ //sacar los datos del body
     }
 }
 
-void postRequest::parse_resource(){
-    resource = getcwd(NULL,0);
-    resource = resource + "/" + getLocation();
+void postRequest::parse_resource(configuration config){
+    //resource = getcwd(NULL,0);
+    resource = config.root;
+    //resource = resource + "/" + getLocation();
     if (!getFileName().empty())
         resource = resource + "/" + getFileName();
-    std::cout << "post request init. resource: " << resource << std::endl;
+    std::cout << "postRequest::parse_resource. resource: " << resource << std::endl;
 }
 
 void postRequest::parseBodyUpload(){

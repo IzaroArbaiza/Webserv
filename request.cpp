@@ -7,11 +7,11 @@ request::request(std::string received) : rawRequest(received){
     //std::cout << "initialized request" << std::endl;
     //std::cout << "    method: " << method << std::endl;
     //std::cout << "    scheme: " << scheme << std::endl;
-    //std::cout << "    domain: " << domain << std::endl;
-    //std::cout << "    uri: " << uri << std::endl;
-    //std::cout << "    query string: " << query_string << std::endl;
-    //std::cout << "    path: " << path << std::endl;
-    //std::cout << "    resource: " << resource << std::endl;
+    std::cout << "    request line: " << request_line << std::endl;
+    std::cout << "    uri: " << uri << std::endl;
+    std::cout << "    query string: " << query_string << std::endl;
+    std::cout << "    path: " << path << std::endl;
+    std::cout << "    resource: " << resource << std::endl;
     //std::cout << "    extention: " << extention << std::endl;
 }
 
@@ -26,7 +26,7 @@ request & request::operator=(request& cp){
     return *this;
 }
 
-void request::fill(std::string message){(void)message;}
+void request::init(){}
 
 std::string request::getMethod(){ return method; }
 
@@ -46,7 +46,7 @@ std::string request::getDomain(){ return domain; }
 
 std::string request::getResource(){ return resource; }
 
-void request::getResource(std::string res){ resource = res; }
+void request::setResource(std::string res){ resource = res; }
 
 request::~request(){
 //delete factory objects?
@@ -161,4 +161,6 @@ bool request::isFolder(std::string route){
     }
 }
 
+
+//ver si la utima parte, del ultimo / al final es folder o no, si tiene punto es un file
 

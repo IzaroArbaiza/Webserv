@@ -6,25 +6,24 @@
 #    By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/30 11:57:17 by xbasabe-          #+#    #+#              #
-#    Updated: 2024/12/12 11:19:29 by iarbaiza         ###   ########.fr        #
+#    Updated: 2025/02/07 11:27:05 by iarbaiza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME := server
-SRC :=	cserver.cpp \
-		response.cpp \
-		postHandler.cpp \
-		request.cpp\
-		parse.cpp\
-		getRequest.cpp\
-		getHandler.cpp \
-		errorHandler.cpp \
+SRC :=	cgiHandler.cpp \
+		cserver.cpp \
 		deleteHandler.cpp \
-		cgiHandler.cpp \
-		postRequest.cpp \
-		RequestFactory.cpp \
-		uploadHandler.cpp \
 		deleteRequest.cpp \
+		errorHandler.cpp \
+		getHandler.cpp \
+		getRequest.cpp\
+		postHandler.cpp \
+		postRequest.cpp \
+		request.cpp\
+		RequestFactory.cpp \
+		response.cpp \
+		uploadHandler.cpp \
 		main.cpp \
 		parseo/Parse.cpp \
 		parseo/ConfFile.cpp \
@@ -33,16 +32,17 @@ SRC :=	cserver.cpp \
 
 CXX = c++
 RM := rm -rf
-CPPFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 
+CXXFLAGS = -Wall -Wextra -Wpedantic -std=c++98 -g3 #-fsanitize=address,leak
+# -Werror
 OBJS = $(SRC:%.cpp=%.o)
 
 all : $(NAME)
 
 $(NAME): $(OBJS)
-		$(CXX) $(CPPFLAGS) $(OBJS) -o $(NAME)
+		$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
 $(OBJS):%.o: %.cpp
-	$(CXX) $(CPPFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean :
 		$(RM) $(OBJS)

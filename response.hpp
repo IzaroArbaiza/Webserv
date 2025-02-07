@@ -1,26 +1,7 @@
 
 #pragma once
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <poll.h>
-#include <errno.h>
-#include <syslog.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <ctype.h>
-#include <stdint.h>
-#include <time.h>
-#include "parse.hpp"
-#include <iostream>
-#include "request.hpp"
-#include <fstream>
-#include <bitset>
+
+#include "struct.hpp"
 #include "request.hpp"
 
 class response{
@@ -38,17 +19,17 @@ class response{
         response(int);
         response(int, std::string);
         response(int, std::string, std::string);
-        response(int, std::string, std::map<std::string, std::string>);
+        response(int, std::string, configuration);
         void fill_status_line(std::string);
         void fill_header();
         void redir_header(std::string);
         void fill_body_answer();
-        void fill_body(std::string);
-        void sendToClient(std::string response, std::string location);
+        void fill_body(std::string, configuration conf);
+        //void sendToClient(std::string response, std::string location);
         std::string convertOutput();
         void readPage(std::string);
-        void locationPage(std::string code);
-        void reply(std::string);
-        void reply();
-        void redirect(std::string location);
+        void locationPage(std::string code, configuration conf);
+        void reply(std::string, configuration conf);
+        void reply(configuration);
+        void redirect(std::string location, configuration conf);
 };

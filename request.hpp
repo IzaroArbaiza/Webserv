@@ -1,17 +1,5 @@
 #pragma once
-#include <map>
-#include <string>
-#include <iostream>
-#include <vector>
-#include <functional>
-#include <stdbool.h>
-#include <sys/stat.h>
-#include "fstream"
-#include <filesystem>
-#include <fstream>
-#include <dirent.h>
-//#include "getRequest.hpp"
-//#include "postRequest.hpp"
+
 #include "response.hpp"
 
 #define CRLF "\r\n"
@@ -23,7 +11,6 @@ class request{
         std::string method;
         std::string uri;
         std::string version;
-        //https://www.ejemplo.com/foro/preguntas/?tag=networking&order=newest#top
         std::string URL;
         std::string scheme; //=protocolo
         std::string authority; //dominio:puerto ¿es igual a domain?
@@ -36,12 +23,11 @@ class request{
     public:
         std::map<std::string, std::string> header_fields;
         std::string rawRequest;
-        std::map<std::string, std::string> requestconfig;
         request (std::string);
         request ();
         request (request&);
         request& operator=(request&);
-        virtual void fill(std::string) = 0; //no instanciable
+        virtual void init() = 0; //no instanciable
         virtual ~request();
         std::string getMethod();
         std::string getUri();
@@ -59,6 +45,6 @@ class request{
         std::string getDomain();
         std::string getResource();
         //setters
-        void getResource(std::string);
+        void setResource(std::string res);
 };
 std::vector<std::string> split(const std::string& s, const std::string& delimiter);

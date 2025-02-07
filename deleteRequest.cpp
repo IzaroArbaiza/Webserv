@@ -1,7 +1,8 @@
 #include "deleteRequest.hpp"
 
-deleteRequest::deleteRequest(std::string message): request(message){
-    deleteParse();
+deleteRequest::deleteRequest(std::string message, configuration config): request(message){
+    init();
+    (void) config;
     std::cout << "deleteRequest created" << std::endl;
 }
 
@@ -17,52 +18,7 @@ deleteRequest & deleteRequest::operator=(deleteRequest& cp){
     return *this;
 }
 
-void deleteRequest::fill (std::string message){ //sobreesribir
-    (void)message;
-    deleteParse();
-}
-/*
-void deleteRequest::fill (std::string message){ //sobreesribir
-    //el getRequest debe llenr su location y vbles
-
-    std::string header;
-    std::string body;
-    std::vector<std::string> lines;
-    //añadir  el recurso o location que quiere accederse, y la función para obtenerlo
-    int pos;
-    request_line = message.substr(0, request_line.find(CRLF)); //first line of the message is the Request-Line = Method SP Request-URI SP HTTP-Version CRLF
-    //split request line
-    method = request_line.substr(0, request_line.find(" "));
-    std::cout << "METHOD: " << method << std::endl;
-    std::string tmp;
-    tmp = message.substr(message.find(" ") + 1, message.find("HTTP") - 5);
-    //if (tmp.c_str() != "/")
-    if (tmp != "/"){
-        uri = tmp;
-        std::cout << "URI: -" << uri << "-" << std::endl;
-        uri_extention();
-    }
-    version = request_line.substr(message.find("HTTP"), 8);
-    std::cout << "VERSION: " << version << std::endl;
-    pos = request_line.find(CRLF) + 1;
-    int end = request_line.find("\r\n\r\n");
-    header = message.substr(pos, end - pos);
-    lines = split(header, CRLF);
-    int i;
-    for (i = 1; i < lines.size() - 1; i++){
-        if (lines[i] == "\r\n\r\n"){
-            i = 0;
-            break ;
-        }
-        header_fields[lines[i].substr(0,lines[i].find(":"))] = lines[i].substr(lines[i].find(":") + 2,lines[i].find(CRLF));
-        //std::cout << "getRequest head fields: " << _header[lines[i].substr(0,lines[i].find(":"))] << std::endl;
-    }
-    if (uri.find("?") != std::string::npos)
-        fillFile();
-    fillLocation();
-}*/
-
-void deleteRequest::deleteParse(){ //reescribir usando el como ejemplo el curl?
+void deleteRequest::init(){ //reescribir usando el como ejemplo el curl?
     std::vector<std::string> splited;
     //std::cout << "parseamos el texto: " << rawRequest<< std::endl;
     request_line = rawRequest.substr(0, rawRequest.find(CRLF));
@@ -95,7 +51,7 @@ void deleteRequest::uri_extention(){
     uri_type = uri.substr(uri.find(".") + 1);
     std::cout << "URI extention: " << uri_type << std::endl;
 }
-
+/* 
 void deleteRequest::fillLocation(){
     //std::string resource;
     if (getUri() == ""){
@@ -114,7 +70,7 @@ void deleteRequest::fillLocation(){
         else
             location = location.substr(location.find("/") + 1);
     }
-}
+} */
 
 void deleteRequest::fillFile(){
     file_name = getUri();

@@ -1,9 +1,6 @@
 #pragma once
-#include <map>
-#include <string>
-#include <iostream>
-#include <vector>
-#include <functional>
+
+#include "struct.hpp"
 #include "request.hpp"
 #include "getRequest.hpp"
 #include "postRequest.hpp"
@@ -16,8 +13,8 @@ class RequestFactory{
     public:
         std::map<std::string, std::string> requestconfig;
         RequestFactory();
-        RequestFactory(std::map<std::string, std::string>);
-        RequestFactory(std::string, std::map<std::string, std::string>);
+        RequestFactory(configuration);
+        RequestFactory(std::string, configuration);
         ~RequestFactory();
-        static request * factoryRequest(std::string);
+        static request * factoryRequest(std::string, configuration);
 };

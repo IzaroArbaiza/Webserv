@@ -1,4 +1,6 @@
 #pragma once
+
+#include "struct.hpp"
 #include "request.hpp"
 
 #define CRLF "\r\n"
@@ -19,16 +21,15 @@ class postRequest : public request{
         std::string request_body;
         std::string boundary;
         std::string file_content;
-        postRequest (std::string);
+        postRequest (std::string, configuration);
         postRequest ();
         postRequest (postRequest&);
         postRequest& operator=(postRequest&);
-        void fill(std::string); //GET y POST diferente funcion fill para coger datos de la uri o del body
-        void initPost(std::string);
+        void init();
         void fillVbles();
         void extractBody();
         void parseBody();
-        void parse_resource();
+        void parse_resource(configuration);
         void parseBodyUpload();
         void fillLocation(std::string);
         ~postRequest();
@@ -44,4 +45,3 @@ class postRequest : public request{
         //std::string uriDetector();
         //std::string getRequestLine();
 };
-
