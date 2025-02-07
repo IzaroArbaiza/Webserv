@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 11:54:37 by iarbaiza          #+#    #+#             */
-/*   Updated: 2024/12/16 20:02:51 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/02/07 12:11:43 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,22 +41,6 @@ void	Location::setLocAutoindex(std::string param) {
 	}
 }
 
-void	Location::setLocAllowmethods(std::vector<std::string> meth) {
-	this->_methods = std::vector<bool>(3, false);
-	
-	for (size_t i = 0; i < meth.size(); i++) {
-		if (meth[i] == "GET") {
-			this->_methods[0] = true;
-		} else if (meth[i] == "POST") {
-			this->_methods[1] = true;
-		} else if (meth[i] == "DELETE") {
-			this->_methods[2] = true;
-		} else {
-			throw(std::invalid_argument("Error: No valid method."));
-		}
-	}
-}
-
 void Location::setLocReturn(std::string param) {
 	this->_return = param;
 }
@@ -73,9 +57,6 @@ void Location::setLocCgiExt(std::vector<std::string> ext) {
 	this->_cgiExt = ext;
 }
 
-
-
-
 std::string Location::getLocPath() {
 	return (this->_path);
 }
@@ -90,10 +71,6 @@ std::string Location::getLocIndex() {
 
 bool Location::getLocAutoindex() {
 	return (this->_autoindex);
-}
-
-std::vector<bool> Location::getLocAllowmethods() {
-	return (this->_methods);
 }
 
 std::string Location::getLocReturn() {

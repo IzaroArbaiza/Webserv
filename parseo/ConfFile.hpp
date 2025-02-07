@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 14:00:27 by iarbaiza          #+#    #+#             */
-/*   Updated: 2024/12/19 19:22:44 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/01/22 14:40:35 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class ConfFile {
 		std::string _path;
 		std::vector<std::string> _serv;
 		size_t	_numServ;
+		std::vector<bool> _methods;
 
 	public:
 		ConfFile(const std::string path);
@@ -39,7 +40,7 @@ class ConfFile {
 		size_t		endServer(std::string &content, size_t i);
 		void		checkData(std::vector<configuration> &confis);
 		void		checkServ();
-
+		void	setAllowmethods(std::vector<std::string> meth);
 		configuration serverParse(std::string &conf, configuration &confis);
 		std::vector<std::string> splitParam(std::string conf, std::string delimit);
 

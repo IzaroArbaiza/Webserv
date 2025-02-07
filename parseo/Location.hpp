@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 11:54:35 by iarbaiza          #+#    #+#             */
-/*   Updated: 2024/12/11 19:31:47 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/01/16 20:22:17 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "ServerConf.hpp"
 #include <stdexcept>
 #include <map>
+#include "../cserver.hpp"
 
 class Location {
 	private:
@@ -23,7 +24,6 @@ class Location {
 		std::string _root;
 		std::string _index;
 		bool		_autoindex;
-		std::vector<bool> _methods;
 		std::string _return;
 		std::string _alias;
 		std::vector<std::string> _cgiPath;
@@ -39,7 +39,6 @@ class Location {
 		void setLocRoot(std::string param);
 		void setLocIndex(std::string param);
 		void setLocAutoindex(std::string param);
-		void setLocAllowmethods(std::vector<std::string> meth);
 		void setLocReturn(std::string param);
 		void setLocAlias(std::string param);
 		void setLocCgiPath(std::vector<std::string> path);
@@ -49,7 +48,6 @@ class Location {
 		std::string	getLocRoot();
 		std::string	getLocIndex();
 		bool getLocAutoindex();
-		std::vector<bool> getLocAllowmethods();
 		std::string	getLocReturn();
 		std::string	getLocAlias();
 		std::vector<std::string> getLocCgiPath();

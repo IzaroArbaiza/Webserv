@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 14:00:04 by iarbaiza          #+#    #+#             */
-/*   Updated: 2024/12/02 14:02:27 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/02/07 12:14:20 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "ConfFile.hpp"
 #include "Location.hpp"
+#include "../cserver.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <vector>
@@ -29,6 +30,7 @@ class ServerConf {
 		size_t		_clientMaxBodySize;
 		std::string	_root;
 		std::string	_index;
+		std::vector<bool> _methods;
 		std::vector<Location> _location;
 		std::map<int, std::string> _error_page;
 
@@ -40,21 +42,22 @@ class ServerConf {
 		bool ipValid(const std::string& ip);
 		bool hostValid(const std::string& host);
 		void dividePortHost(std::string param);
-		void initErrorPages(void);
 		bool validErrorPages(void);
 
 		void setPort(std::string param);
 		void setHost(std::string param);
 		void setServerName(std::string param);
-		void setErrorPages(std::vector<std::string> &param);
+		void setErrorPages(std::vector<std::string> &param, configuration &confis);
 		void setClientMaxBodySize(std::string param);
 		void setRoot(std::string param);
 		void setIndex(std::string param);
-		void setLocation(std::vector<std::string> param, std::string path);
+		void setLocAllowmethods(std::vector<std::string> meth);
+		locationer setLocation(std::vector<std::string> param, std::string path, locationer loc1);
 
 		int	checkLocValid(Location &loc);
 		bool checkFileHtml(std::string root, std::string index);
 		bool checkLocations();
+		int ft_stoi(const std::string& str);
 
 		/* const */ int 	getPort();
 		const std::string getHost();
@@ -63,8 +66,6 @@ class ServerConf {
 		const std::string getRoot();
 		const std::string getIndex();
 		std::vector<Location> getLocation();
-
-		int ft_stoi(const std::string& str);
 };
 
 #endif

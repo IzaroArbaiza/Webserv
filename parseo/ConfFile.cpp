@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 14:00:31 by iarbaiza          #+#    #+#             */
-/*   Updated: 2024/12/19 19:22:37 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/02/07 12:11:24 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,47 +23,37 @@ ConfFile::~ConfFile() {}
 int ConfFile::checkFile(const std::string& path) {
     struct stat info;
 
-    // Verifica si el archivo o directorio existe
     if (stat(path.c_str(), &info) != 0) {
-        return (-1);  //No se pudo acceder a la ruta
+        return (-1);
     }
-
-    // Verifica si la ruta tiene al menos 5 caracteres para comparar la extensión
     if (path.size() >= 5) {
-        // Obtiene los últimos 5 caracteres de la ruta
         std::string extension = path.substr(path.size() - 5);
         if (extension == ".conf") {
-            // Verifica si es un archivo que se puede abrir
             std::ifstream file(path.c_str());
             if (file) {
-                return (0); //Es un archivo .conf válido
+                return (0);
             } else {
-                return (1); //No se pudo abrir el archivo .conf
+                return (1);
             }
         }
     }
-
-    // Verifica si es un directorio
     if (info.st_mode & S_IFDIR) {
         return (2);
     }
-
-    // Si no es ni un archivo .conf ni un directorio
     return (3);
 }
 
 std::string ConfFile::readFile(std::string file) {
     std::ifstream conf_file(file.c_str());
+    
     if (!conf_file || !conf_file.is_open()) {
         return (NULL);
     }
-
     std::string content;
     std::string new_file;
     while (std::getline(conf_file, new_file)) {
         content += new_file + "\n";
     }
-
     return (content);
 }
 
@@ -80,7 +70,6 @@ void ConfFile::removeTrash(std::string &content) {
         content.erase(pos, end-pos);
         pos = content.find('#', pos);
     }
-    //Cambiar!! posibility to erase comments (de momento no creo que necesitemos)
 }
 
 /**
@@ -95,7 +84,6 @@ void ConfFile::splitServers(std::string &content) {
     if (content.find("server", 0) == std::string::npos) {
         std::cout << "Server not found." << std::endl;
     }
-
     while (start != end && start < content.length()) {
         if (startServer(content, start) == content.length()) {
             break ;
@@ -109,7 +97,6 @@ void ConfFile::splitServers(std::string &content) {
         this->_numServ++;
         start = end + 1;
     }
-
 	for (std::vector<std::string>::size_type i = 0; i < _serv.size(); ++i) {
         std::cout << "Server num " << i << ": " << _serv[i] << std::endl;
     }
@@ -166,20 +153,17 @@ size_t ConfFile::endServer(std::string &content, size_t i) {
     return (content.length());
 }
 
-/**
- * Checkeo de cada servidor, lanza serverParse para parsearlos, y mas adelante verificar esto mismo
-*/
+
+//Checkeo de cada servidor, lanza serverParse para parsearlos, y mas adelante verificar esto mismo
 void ConfFile::checkData(std::vector<configuration> &confis) {
     if (_serv.size() != _numServ) {
         throw(std::invalid_argument("Something happened with the server amount."));
     }
-    //std::cout << _numServ << std::endl;
     if (_numServ > 1) {
         checkServ();
     }
     for (size_t i = 0; i < _numServ; i++) {
         configuration confis2;
-        
         confis2.numServs = _numServ;
         confis2 = serverParse(_serv[i], confis2);
         confis.push_back(confis2);
@@ -197,15 +181,15 @@ void ConfFile::checkServ() {
     }
 }
 
-/**
- * Funcion de parseo de cada una de las lineas de cada servidor del archivo de configuracion
-*/
+//Funcion de parseo de cada una de las lineas de cada servidor del archivo de configuracion
 configuration ConfFile::serverParse(std::string &conf, configuration &confis) {
     std::vector<std::string> param;
     std::vector<std::string> errors;
     std::string delimit;
+    bool allowmeth = false;
     int loc = 1;
     ServerConf server;
+    confis.iter = 0;
 
     delimit = " \n\t";
     param = splitParam(conf, delimit);
@@ -255,9 +239,31 @@ configuration ConfFile::serverParse(std::string &conf, configuration &confis) {
             }
             server.setIndex(param[++i]);
         }
+        else if (param[i] == "allow_methods" && (i+1) < param.size()) {
+			std::vector<std::string> meth;
+			
+			if (allowmeth) {
+				throw(std::invalid_argument("Error: Allowed methods are duplicated."));
+			}
+			while (++i < param.size()) {
+				if (param[i].find(";") != std::string::npos) {
+					server.checkParam(param[i]);
+					meth.push_back(param[i]);
+					break;
+				} else {
+					meth.push_back(param[i]);
+					if (i+1 >= param.size()) {
+						throw(std::invalid_argument("Error: Allowed methods: invalid parameter."));
+					}
+				}
+			}
+            setAllowmethods(meth);
+			allowmeth = true;
+		}
         else if (param[i] == "location" && (i+1) < param.size()) {
             std::vector<std::string> code;
             std::string path;
+            locationer loc1;
             
             i++;
             if (param[i] == "{" || param[i] == "}") {
@@ -265,13 +271,16 @@ configuration ConfFile::serverParse(std::string &conf, configuration &confis) {
             }
             path = param[i];
             if (param[++i] != "{") {
-                throw(std::invalid_argument("Wrong ctaracter in scope."));
+                throw(std::invalid_argument("Wrong character in scope."));
             }
             i++;
             while (param[i] != "}" && i < param.size()) {
                 code.push_back(param[i++]);
             }
-            server.setLocation(code, path);
+            confis.iter++;
+            loc1.location_name = path;
+            loc1 = server.setLocation(code, path, loc1);
+            confis.locations.push_back(loc1);
             if (param[i] != "}" && i < param.size()) {
                 throw(std::invalid_argument("Wrong character in scope."));
             }
@@ -305,7 +314,7 @@ configuration ConfFile::serverParse(std::string &conf, configuration &confis) {
     if (server.checkLocations()) {
         throw std::invalid_argument("Location is duplicated");
     }
-    server.setErrorPages(errors);
+    server.setErrorPages(errors, confis);
     if (!server.validErrorPages()) {
         throw std::invalid_argument("Invalid error or error page");
     }
@@ -316,8 +325,30 @@ configuration ConfFile::serverParse(std::string &conf, configuration &confis) {
     confis.port = to_string(server.getPort());
     confis.root = server.getRoot();
     confis.server_name = server.getServerName();
-    
+    confis.get_allowed = true;
+    confis.post_allowed = true;
+    confis.delete_allowed = true;
+    confis.autoindex = true;
+    for (size_t i = 0; i < this->_methods.size(); i++) {
+		confis.get_allowed = this->_methods[i]; 
+	}
     return (confis);
+}
+
+void	ConfFile::setAllowmethods(std::vector<std::string> meth) {
+	this->_methods = std::vector<bool>(3, false);
+	
+	for (size_t i = 0; i < meth.size(); i++) {
+		if (meth[i] == "GET") {
+			this->_methods[0] = true;
+		} else if (meth[i] == "POST") {
+			this->_methods[1] = true;
+		} else if (meth[i] == "DELETE") {
+			this->_methods[2] = true;
+		} else {
+			throw(std::invalid_argument("Error: No valid method."));
+		}
+	}
 }
 
 /**

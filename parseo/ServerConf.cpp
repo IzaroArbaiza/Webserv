@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 14:00:20 by iarbaiza          #+#    #+#             */
-/*   Updated: 2024/12/16 20:04:36 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/02/07 12:13:56 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,13 @@
 ServerConf::ServerConf() {
 	_port = 0;
 	_clientMaxBodySize = 0;
-	initErrorPages();
 }
 ServerConf::~ServerConf() {}
 
 void ServerConf::checkParam(std::string &param) {
 	size_t pos;
 
-	pos = param.rfind(';'); //Finds last ; from param
+	pos = param.rfind(';');
 	if (pos != param.size()-1) {
 		std::cout << param << std::endl;
 		throw(std::invalid_argument("No valid parameter"));
@@ -76,24 +75,18 @@ void ServerConf::dividePortHost(std::string param) {
 	}
 	setHost(host);
 	setPort(port);
-	
-}
-
-void ServerConf::initErrorPages(void) {
-	this->_error_page[404] = "";
-	this->_error_page[418] = "";
-	this->_error_page[500] = "";
 }
 
 bool ServerConf::validErrorPages(void) {
 	std::map<int, std::string>::const_iterator it;
 
 	for (it = this->_error_page.begin(); it != this->_error_page.end(); it++) {
-		if (it->first < 400 || it->first > 511) {//errores de momento
+		if (it->first < 400 || it->first > 511) {
 			return (false);
 		}
-		//Cambiar!!
-		//check path of error
+		if (ConfFile::checkFile(it->second) < 0) {
+			return (false);
+		}
 	}
 	return (true);
 }
@@ -158,7 +151,7 @@ void ServerConf::setPort(std::string param) {
 		}
 	}
 	port = ft_stoi(param);
-	if (port < 1 || port > 65536) { //the lowest & highest valid port number = (2^16)-1, or 0-65535
+	if (port < 1 || port > 65536) {
 		throw(std::invalid_argument("Wrong Port: is not a valid port."));
 	}
 	this->_port = (int)port;
@@ -170,7 +163,7 @@ void ServerConf::setServerName(std::string param) {
 }
 
 // Error pages for the codes
-void ServerConf::setErrorPages(std::vector<std::string> &param) {
+void ServerConf::setErrorPages(std::vector<std::string> &param, configuration &confis) {
 	if (param.empty()) {
 		return ;
 	}
@@ -186,13 +179,10 @@ void ServerConf::setErrorPages(std::vector<std::string> &param) {
 		if (param[i].size() != 3) {
 			throw(std::invalid_argument("Wrong code: is no valid."));
 		}
-
 		int errors = ft_stoi(param[i]);
-		//Cambiar!!
-		if (errors < 400/* && response (switch/case -> default(undefined) -> error)*/) {
+		if (errors < 400 || errors > 520) {
 			throw std::invalid_argument("Wrong error code.");
 		}
-
 		i++;
 		std::string path = param[i];
 		checkParam(path);
@@ -206,11 +196,14 @@ void ServerConf::setErrorPages(std::vector<std::string> &param) {
 			}
 		}
 		std::map<int, std::string>::iterator it = this->_error_page.find(errors);
-
-		if (it != this->_error_page.end()) {
+		std::map<int, std::string>::iterator it2 = confis.errors.find(errors);
+		
+		if (it != this->_error_page.end() && it2 != confis.errors.end()) {
 			this->_error_page[errors] = path;
+			confis.errors[errors] = path;
 		} else {
 			this->_error_page.insert(std::make_pair(errors, path));
+			confis.errors.insert(std::make_pair(errors, path));
 		}
 	}
 }
@@ -236,7 +229,7 @@ void ServerConf::setRoot(std::string param) {
 	std::string root;
 
 	checkParam(param);
-	if (ConfFile::checkFile(param) == 2) { //If param is 2, its a directory
+	if (ConfFile::checkFile(param) == 2) {
 		this->_root = param;
 		return ;
 	}
@@ -255,7 +248,7 @@ void ServerConf::setIndex(std::string param) {
 	this->_index = param;
 }
 
-void ServerConf::setLocation(std::vector<std::string> param, std::string path) {
+locationer ServerConf::setLocation(std::vector<std::string> param, std::string path, locationer loc1) {
 	Location loc;
 	bool	autoin = false;
 	bool	allowmeth = false;
@@ -309,7 +302,7 @@ void ServerConf::setLocation(std::vector<std::string> param, std::string path) {
 					}
 				}
 			}
-			loc.setLocAllowmethods(meth);
+			setLocAllowmethods(meth);
 			allowmeth = true;
 		} else if (param[i] == "return" && (i+1) < param.size()) {
 			if (!loc.getLocReturn().empty()) {
@@ -386,6 +379,44 @@ void ServerConf::setLocation(std::vector<std::string> param, std::string path) {
 			break ;
 	}
 	this->_location.push_back(loc);
+	configuration conf1;
+	
+	loc1.index = loc.getLocIndex();
+	loc1.location_root = loc.getLocRoot();
+	loc1.autoindex = loc.getLocAutoindex();
+	loc1.deleteOn = false;
+	loc1.postOn = false;
+	loc1.getOn = false;
+	for (size_t i = 0; i < this->_methods.size(); i++) {
+		if (this->_methods[0] == true) {
+			loc1.getOn = true;
+		}
+		if (this->_methods[1] == true) {
+			loc1.postOn = true;
+		}
+		if (this->_methods[2] == true) {
+			loc1.deleteOn = true;
+		} else {
+			return (loc1);
+		}
+	}
+	return (loc1);	
+}
+
+void	ServerConf::setLocAllowmethods(std::vector<std::string> meth) {
+	this->_methods = std::vector<bool>(3, false);
+	
+	for (size_t i = 0; i < meth.size(); i++) {
+		if (meth[i] == "GET") {
+			this->_methods[0] = true;
+		} else if (meth[i] == "POST") {
+			this->_methods[1] = true;
+		} else if (meth[i] == "DELETE") {
+			this->_methods[2] = true;
+		} else {
+			throw(std::invalid_argument("Error: No valid method in location."));
+		}
+	}
 }
 
 int ServerConf::checkLocValid(Location &loc) {
@@ -411,18 +442,15 @@ int ServerConf::checkLocValid(Location &loc) {
 				return (1);
 			}
 		}
-
 		if (loc.getLocCgiPath().size() != loc.getLocCgiExt().size()) {
 			return (1);
 		}
-
 		const std::vector<std::string> &cgiPaths = loc.getLocCgiPath();
 		for (it = cgiPaths.begin(); it != cgiPaths.end(); ++it) {
 			if (ConfFile::checkFile(*it) < 0) {
 				return (1);
 			}
 		}
-
 		const std::vector<std::string> &cgiExc = loc.getLocCgiExt();
 		for (it = cgiExc.begin(); it != cgiExc.end(); ++it) {
 			std::string tmp = *it;
@@ -443,7 +471,6 @@ int ServerConf::checkLocValid(Location &loc) {
 				}
 			}
 		}
-
 		if (loc.getLocCgiPath().size() != loc.getLocExtPath().size()) {
 			return (1);
 		}
@@ -470,9 +497,6 @@ int ServerConf::checkLocValid(Location &loc) {
 	}
 	return (0);
 }
-
-
-
 
 /* const */ int	ServerConf::getPort() {
 	return (this->_port);
