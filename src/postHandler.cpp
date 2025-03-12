@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 18:28:08 by iarbaiza          #+#    #+#             */
-/*   Updated: 2025/03/12 18:28:09 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/03/12 19:34:20 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ std::string postHandler::actionDetector(request * entry)
         return "upload";
     else if (type.find("application/x-www-form-urlencoded") != std::string::npos)
         return "cgi";
-    return (0);
+    return ("");
 }
 
 void postHandler::execute(request * entry, configuration conf){

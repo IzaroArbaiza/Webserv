@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 18:28:12 by iarbaiza          #+#    #+#             */
-/*   Updated: 2025/03/12 19:06:55 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/03/12 19:36:35 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,23 +28,47 @@ postRequest &postRequest::operator=(postRequest& cp){
     return *this;
 }
 
-void postRequest::init(){
-    boundary = header_fields["Content-Type"].substr(header_fields["Content-Type"].find("boundary=") + 9, header_fields["Content-Type"].find(CRLF));
+void postRequest::init() {
+    if (header_fields.find("Content-Type") != header_fields.end()) {
+        std::string content_type = header_fields["Content-Type"];
+        size_t boundary_pos = content_type.find("boundary=");
+
+        if (boundary_pos != std::string::npos) {
+            boundary_pos += 9;
+
+            size_t end_pos = content_type.find(CRLF, boundary_pos);
+            if (end_pos == std::string::npos) {
+                end_pos = content_type.length();
+            }
+            if (boundary_pos <= content_type.size()) {
+                boundary = content_type.substr(boundary_pos, end_pos - boundary_pos);
+            }
+        }
+    }
+
     extractBody();
-    if (actionDetector() == "cgi"){
-        exec_vbles = request_body.substr(request_body.find_first_of("=") + 1);
+
+    if (actionDetector() == "cgi") {
+        if (!request_body.empty() && request_body.find_first_of("=") != std::string::npos) {
+            exec_vbles = request_body.substr(request_body.find_first_of("=") + 1);
+        }
         fillFilename();
     }
-    if (actionDetector() == "upload"){
-        std::string boundary = header_fields["Content-Type"].substr(header_fields["Content-Type"].find("boundary=") + 9, header_fields["Content-Type"].find(CRLF));
-        std::vector<std::string> body_fields;
-        fillFilename();
-        if (!request_body.empty() && request_body.find(boundary) != std::string::npos){
-            body_fields = vector_split(request_body, "--" + boundary);
-            file_content = body_fields[1];
+    if (actionDetector() == "upload") {
+        if (!boundary.empty()) {
+            std::vector<std::string> body_fields;
+            fillFilename();
+
+            if (!request_body.empty() && request_body.find(boundary) != std::string::npos) {
+                body_fields = vector_split(request_body, "--" + boundary);
+                if (body_fields.size() > 1) {
+                    file_content = body_fields[1];
+                }
+            }
         }
     }
 }
+
 
 void postRequest::extractBody(){
     size_t pos = rawRequest.find("\r\n\r\n");
@@ -113,7 +137,7 @@ std::string postRequest::actionDetector()
         return "upload";
     else if (type.find("application/x-www-form-urlencoded") != std::string::npos)
         return "cgi";
-    return (0);
+    return ("");
 }
 
 void postRequest::parseUri(configuration & conf){
