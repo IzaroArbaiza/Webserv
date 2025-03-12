@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 18:28:12 by iarbaiza          #+#    #+#             */
-/*   Updated: 2025/03/12 18:28:13 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/03/12 19:06:55 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ postRequest::postRequest(std::string str, configuration config): request(str) {
 
 postRequest::postRequest(){}
 
-postRequest::postRequest(postRequest& cp){
+postRequest::postRequest(postRequest& cp) : request(cp) {
     *this = cp;
 }
 

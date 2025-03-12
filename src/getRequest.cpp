@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 18:27:56 by iarbaiza          #+#    #+#             */
-/*   Updated: 2025/03/12 18:27:57 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/03/12 19:06:41 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ getRequest::getRequest(std::string message, configuration config): request(messa
 
 getRequest::getRequest(){parseURL();}
 
-getRequest::getRequest(getRequest& cp){
+getRequest::getRequest(getRequest& cp) : request(cp) {
     *this = cp;
 }
 

@@ -6,7 +6,7 @@
 /*   By: iarbaiza <iarbaiza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/12 18:27:46 by iarbaiza          #+#    #+#             */
-/*   Updated: 2025/03/12 18:27:47 by iarbaiza         ###   ########.fr       */
+/*   Updated: 2025/03/12 19:06:02 by iarbaiza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ deleteRequest::deleteRequest(std::string message, configuration config): request
 
 deleteRequest::deleteRequest(){parseURL();}
 
-deleteRequest::deleteRequest(deleteRequest& cp){
+deleteRequest::deleteRequest(deleteRequest& cp) : request(cp) {
     *this = cp;
 }
 
