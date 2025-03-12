@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My_Webserver</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+	<h1>Hello Bitches</h1>
+	<h3>webserver project testing page. site_root/algo</h3>
+	<h4>Upload a file</h4>
+	<form action="./uploads" method="post" enctype="multipart/form-data">
+		<input type="file" name="file">
+		<button type="submit">Upload File</button>
+	</form>
+	<br>
+	<h4>Exec a file. CGI with GET method</h4>
+	<form action="../cgi-bin" method="get" enctype="multipart/form-data">
+		<p>File name: <input type="text" name="file" size="40"></p>
+		<button type="submit">Exec CGI</button>
+	</form>
+	<br>
+	<h4>PAGE: Calculator</h4>
+	<p>CGI exec example with POST method</p>
+	<button onclick="location.href='pages/calculator.html'">Calculator</button>
+	<br>
+	<h4>PAGE: Exec a CGI with POST method page</h4>
+	<button onclick="location.href='pages/multi.html'">POST page</button>
+	<br>
+</body>
+</html>

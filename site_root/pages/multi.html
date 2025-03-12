@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My_Webserver</title>
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<h1>CGI POST Form</h1>
+<h3>powered by webserver</h3>
+<p>Exec a CGI sent to sever with a POST method</p>
+
+<br>
+  <form action="/cgi-bin" method="post" enctype="application/x-www-form-urlencoded">
+		<input type="text" name="file"><br><br>
+    <label for="argv1">var 1:</label>
+    <input type="text" id="argv1" name="argv1"><br><br>
+    <label for="argv2">var 2:</label>
+    <input type="text" id="argv2" name="argv2"><br><br>
+    <button type="submit">Exec</button>
+	</form>
+  <br>
+
+  <button onclick="location.href='../index.html'">to Index</button>
+  <button onclick="history.back()">Back</button>
+</body>
+</html>
