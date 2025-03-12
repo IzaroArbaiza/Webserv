@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My_Webserver</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<h1>Hello Urduliz</h1>
+<h3>webserver project testing page</h3>
+<h4>Upload a file</h4>
+<form action="../downloads" method="post" enctype="multipart/form-data">
+	<!--  <input type="file" name="file" accept=".jpg, .png, .jpeg"  -->
+	<input type="file" name="file">
+	<button type="submit">Upload File</button>
+  </form>
+  <br>
+<h4>Delete a file</h4>
+  <form action="../downloads" method="delete" enctype="multipart/form-data"> <!--deberia ser metodo delete -->
+	<input type="file" name="file">
+	<button type="submit">Delete File</button>
+  </form>
+  <br>
+
+<h4>Upload an exec a CGI with GET method</h4>
+  <form action="../cgi-bin" method="get" enctype="multipart/form-data">
+		<input type="file" name="file">
+    <button type="submit">Exec CGI</button>
+	</form>
+  <br>
+  <h4>PAGE: Calculator</h4>
+  <p>CGI exec example with POST method</p>
+  <button onclick="location.href='calculator.html'">Calculator</button>
+  <br>
+  <h4>PAGE: Exec a CGI with POST method page</h4>
+  <button onclick="location.href='multi.html'">POST page</button>
+  <br>
+</body>
+</html>
